@@ -1,0 +1,68 @@
+import tkinter as tk
+
+marks = {}
+
+def add_mark():
+    subject = subject_entry.get().strip()
+    try:
+        mark = float(mark_entry.get().strip())
+        if 0 <= mark <= 100:
+            marks[subject] = mark
+            result_text.insert(tk.END, f"Added {subject}: {mark}\n")
+        else:
+            result_text.insert(tk.END, "Error: Mark must be between 0 and 100.\n")
+    except ValueError:
+        result_text.insert(tk.END, "Error: Please enter a valid number for the mark.\n")
+    
+    subject_entry.delete(0, tk.END)
+    mark_entry.delete(0, tk.END)
+
+def calculate_average():
+    if not marks:
+        result_text.insert(tk.END, "Error: No marks available to calculate average.\n")
+        return
+    
+    total = sum(marks.values())
+    count = len(marks)
+    average = total / count
+    
+    result_text.insert(tk.END, f"\nAverage Mark: {average:.2f}\n")
+    
+    letter_grade = get_letter_grade(average)
+    result_text.insert(tk.END, f"Letter Grade: {letter_grade}\n")
+
+def get_letter_grade(average):
+    if average >= 90:
+        return 'A'
+    elif average >= 80:
+        return 'B'
+    elif average >= 70:
+        return 'C'
+    elif average >= 60:
+        return 'D'
+    else:
+        return 'F'
+
+root = tk.Tk()
+root.title("Student Mark Tracker")
+
+subject_label = tk.Label(root, text="Subject:")
+subject_label.grid(row=0, column=0, padx=10, pady=10)
+subject_entry = tk.Entry(root)
+subject_entry.grid(row=0, column=1, padx=10, pady=10)
+
+mark_label = tk.Label(root, text="Mark:")
+mark_label.grid(row=1, column=0, padx=10, pady=10)
+mark_entry = tk.Entry(root)
+mark_entry.grid(row=1, column=1, padx=10, pady=10)
+
+add_button = tk.Button(root, text="Add Mark", command=add_mark)
+add_button.grid(row=2, column=0, columnspan=2, pady=10)
+
+calc_button = tk.Button(root, text="Calculate Average", command=calculate_average)
+calc_button.grid(row=3, column=0, columnspan=2, pady=10)
+
+result_text = tk.Text(root, height=20, width=60)
+result_text.grid(row=4, column=0, columnspan=2, padx=10, pady=25)
+
+root.mainloop()
